@@ -12,8 +12,8 @@
     "angular-cookies": "1.2.6",
     "angular-sanitize": "1.2.6",
     "angular-route": "1.2.6",
-    "christiansmith/ngDropbox": "*",
-    "https://github.com/dhilowitz/jsTaskPaper.git": "*"
+    "ngDropbox": "christiansmith/ngDropbox",
+    "jsTaskPaper": "https://github.com/dhilowitz/jsTaskPaper.git"
   },
   "devDependencies": {
     "angular-mocks": "1.2.6",
