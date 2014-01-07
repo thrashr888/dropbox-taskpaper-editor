@@ -1,4 +1,4 @@
-/*globals $*/
+/*globals $, prompt*/
 'use strict';
 
 angular.module('dropboxTaskpaperApp')
@@ -16,7 +16,7 @@ angular.module('dropboxTaskpaperApp')
     // allow inserting tabs into our editor's textarea
     $(document).delegate('textarea', 'keydown', function(e) {
       var keyCode = e.keyCode || e.which;
-      console.log(keyCode, e);
+      // console.log(keyCode, e);
 
       if (
            e.which === 115 && (e.ctrlKey||e.metaKey) || e.which === 19
@@ -55,9 +55,12 @@ angular.module('dropboxTaskpaperApp')
     $scope.origFileContent = null;
     $scope.fileConflict = false;
 
-    if($rootScope.isAuthenticated) {
+    $scope.readDir = function readDir(autoOpenFile) {
       $scope.loadingFiles = true;
       Dropbox.readdir(dirName).then(function (res) {
+        if(!res) {
+          $scope.message = 'No Taskpaper files found in /TaskPaper/*.';
+        }
         // for(var i = 0, l = res.length; i<l; i++) {
         //   res[i].replace('/$\/' + dirName + '\//i', '');
         // }
@@ -65,10 +68,14 @@ angular.module('dropboxTaskpaperApp')
         $scope.files = res;
         $scope.loadingFiles = false;
 
-        if(localStorage['currentFile']) {
-          $scope.openFile(localStorage['currentFile']);
+        if(autoOpenFile && localStorage.currentFile) {
+          $scope.openFile(localStorage.currentFile);
         }
       });
+    };
+
+    if($rootScope.isAuthenticated) {
+      $scope.readDir(true);
     }
 
     $scope.logOut = function logOut() {
@@ -89,18 +96,15 @@ angular.module('dropboxTaskpaperApp')
         $scope.loadingContent = false;
       } else {
         // try {
-          $scope.renderedContent = Taskpaper.convertTaskpaperToHtml($scope.fileContent);
-          $scope.loadingContent = false;
+        $scope.renderedContent = Taskpaper.convertTaskpaperToHtml($scope.fileContent);
+        $scope.loadingContent = false;
         // } catch(e) {
         //   $scope.message = 'Error parsing the taskpaper document. ' + e;
         // }
       }
     };
 
-    $scope.$watch('fileContent', function fileContentWatch(fileContent) {
-      if(!fileContent) {
-        return;
-      }
+    $scope.$watch('fileContent', function fileContentWatch() {
       $scope.fileContentChanged();
     });
 
@@ -151,7 +155,7 @@ angular.module('dropboxTaskpaperApp')
             $scope.saveFile($scope.currentFile, $scope.fileContent);
           }
           $scope.currentFile = file;
-          localStorage['currentFile'] = file;
+          localStorage.currentFile = file;
           $scope.origFileContent = res;
           $scope.fileContent = res;
           $scope.fileConflict = false;
@@ -159,7 +163,7 @@ angular.module('dropboxTaskpaperApp')
         } else if (isNewFile) {
           // just a new file. change everything.
           $scope.currentFile = file;
-          localStorage['currentFile'] = file;
+          localStorage.currentFile = file;
           $scope.origFileContent = res;
           $scope.fileContent = res;
           $scope.fileConflict = false;
@@ -217,6 +221,35 @@ angular.module('dropboxTaskpaperApp')
         $scope.message = null;
         if (!res) {
           $scope.message = 'Error saving file. Try refreshing the page.';
+        }
+      });
+    };
+
+    $scope.newFile = function newFile() {
+      if($scope.fileConflict) {
+        $scope.message = 'The version of this file has changed since you last opened it. '+
+          'You will need to refresh to make changes before saving.';
+        return;
+      }
+
+      var file = prompt('File name:');
+      if (!file) {
+        return;
+      }
+      file = '/' + dirName + '/' + file + '.taskpaper';
+
+      $scope.message = 'Creating ' + file + '...';
+      Dropbox.writeFile(file, '').then(function (res) {
+        console.log(res);
+        if (!res) {
+          $scope.message = 'Error saving file. Try refreshing the page.';
+        } else {
+          $scope.currentFile = res.path;
+          $scope.origFileContent = '';
+          $scope.fileContent = '';
+          $scope.fileConflict = false;
+          $scope.message = null;
+          $scope.readDir();
         }
       });
     };
@@ -293,7 +326,7 @@ angular.module('dropboxTaskpaperApp')
       }
 
       return line;
-     };
+    };
 
     // // Returns the line with the appropriate tags added.
     exports.tagLine = function tagLine(line) {
@@ -308,7 +341,9 @@ angular.module('dropboxTaskpaperApp')
 
         var tags = line.match(/@[^\s]+/g);
 
+        /*jshint -W116*/
         if(tags != undefined) {
+        /*jshint +W116*/
           for(var i = 0; i < tags.length; i++) {
             var originalTag = tags[i];
             line = line.replace(originalTag, '<span class=\"' + this.kTagClass + '\">' + originalTag + '</span>');

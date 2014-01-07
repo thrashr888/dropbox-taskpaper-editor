@@ -25,7 +25,7 @@
   </div>
 
   <div class="col-md-12">
-    <p style="font-size:1.5em;"><b>{{currentFile}}</b> <b ng-show="fileConflict" style="color:red; font-weight:bolder;">⚠ Conflict</b> <button ng-show="currentFile" ng-click="saveFile(currentFile, fileContent)" class="btn">Save</button> <span ng-show="loadingContent">Loading document...</span> <span ng-show="refreshContent" style="color:grey; font-weight:bolder;" class="loading-spinner">⟳</span></p>
+    <p style="font-size:1.5em;"><b>{{currentFile}}</b> <b ng-show="fileConflict" style="color:red; font-weight:bolder;">⚠ Conflict</b> <button ng-show="currentFile" ng-click="saveFile(currentFile, fileContent)" class="btn">Save</button> <button ng-click="newFile()" class="btn">New File</button> <span ng-show="loadingContent">Loading document...</span> <span ng-show="refreshContent" style="color:grey; font-weight:bolder;" class="loading-spinner">⟳</span></p>
   </div>
 
   <div class="col-md-6" ng-show="currentFile">

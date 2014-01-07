@@ -24,11 +24,11 @@ angular.module('dropboxTaskpaperApp', [
       });
   })
   .value('DropboxClientId', '563mc3wfk1qd68q')
-  .value('DropboxRedirectUri', 'http://localhost:9000/bower_components/ngDropbox/callback.html')
+  .value('DropboxRedirectUri', 'https://' + window.location.host + '/bower_components/ngDropbox/callback.html')
   .value('DropboxLocalStorageOAuthKey', 'ngDropbox.oauth')
   .config(function (DropboxProvider) {
     DropboxProvider.config('563mc3wfk1qd68q',
-      'http://localhost:9000/bower_components/ngDropbox/callback.html');
+      'https://' + window.location.host + '/bower_components/ngDropbox/callback.html');
   })
   // .constant('DROPBOX_APP_KEY', '563mc3wfk1qd68q')
   // .service('dropbox', function (DROPBOX_APP_KEY, $rootScope) {
@@ -79,19 +79,19 @@ angular.module('dropboxTaskpaperApp', [
     $rootScope.isAuthenticated = false;
 
     $rootScope.checkAuthenticated = function () {
-        // console.log(localStorage);
-        if (localStorage[DropboxLocalStorageOAuthKey]) {
-            var oauth = angular.fromJson(localStorage[DropboxLocalStorageOAuthKey]);
-            if(oauth) {
+      // console.log(localStorage);
+      if (localStorage[DropboxLocalStorageOAuthKey]) {
+        var oauth = angular.fromJson(localStorage[DropboxLocalStorageOAuthKey]);
+        if(oauth) {
 
-            }
-            Dropbox.setCredentials(oauth);
-            $rootScope.uid = oauth.uid;
-            $rootScope.isAuthenticated = true;
-            return true;
-        } else {
-            return false;
         }
+        Dropbox.setCredentials(oauth);
+        $rootScope.uid = oauth.uid;
+        $rootScope.isAuthenticated = true;
+        return true;
+      } else {
+        return false;
+      }
     };
 
     $rootScope.checkAuthenticated();
