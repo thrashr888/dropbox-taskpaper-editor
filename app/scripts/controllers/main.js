@@ -274,7 +274,8 @@ angular.module('dropboxTaskpaperApp')
 
       var tppObject = this;
       $.each(taskPaperText.split('\n'), function() {
-        var outputLine = this + '\n';
+        var html = document.createElement('a').appendChild(document.createTextNode(this)).parentNode.innerHTML;
+        var outputLine = html + '\n';
         outputLine = tppObject.tagLine(outputLine);
         outputLine = tppObject.indentLine(outputLine);
         outputHtml = outputHtml + outputLine;
