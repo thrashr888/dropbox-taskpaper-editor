@@ -7,13 +7,13 @@ This is a client-side app using AngularJS and Dropbox APIs. It does not require 
 
 Demo site deployed on S3 and CloudFront: (Dropbox Taskpaper Editor)[https://dgiu4ye9xtr28.cloudfront.net/]
 
-Setup
------
+Install & Run
+-------------
 
-0. npm install -g grunt-cli bower
-1. npm install
-2. bower install
-3. grunt serve
+    > npm install -g grunt-cli bower
+    > npm install
+    > bower install
+    > grunt serve
 
 Thanks
 ------
@@ -31,7 +31,7 @@ This app uses:
 License
 -------
 
-Copyright (C) 2013 Paul Thrasher
+Copyright (C) 2013-2014 Paul Thrasher
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
